@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: smart-presentation-builder
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.enableCORS false --server.enableXsrfProtection false
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+    healthCheckPath: /

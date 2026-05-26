@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>مركز سرعة انجاز للخدمات الطلابية والأكاديمية</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e3c78">
+    <meta name="description" content="مركز سرعة انجاز للخدمات الطلابية والأكاديمية - نظام التليجرام التلقائي">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        .header-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        .whatsapp-link {
+            color: #25D366;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-link:hover {
+            color: #128C7E;
+            transform: scale(1.05);
+        }
+        .log-container {
+            height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .console-container {
+            height: 250px;
+            overflow-y: auto;
+            background: #212529;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            color: #28a745;
+            font-family: 'Courier New', monospace;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .log-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        .log-error {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .log-warning {
+            background: #fff3cd;
+            color: #664d03;
+        }
+        .log-info {
+            background: #cff4fc;
+            color: #055160;
+        }
+        .log-time {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .console-line {
+            margin-bottom: 2px;
+            font-size: 12px;
+        }
+        .monitoring-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        .alert-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            min-width: 400px;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .keyword-alert {
+            animation: alertBounce 0.5s ease-in-out;
+        }
+
+        @keyframes alertBounce {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        /* تحسين الشكل للجوال */
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 10px;
+            }
+            .card-body {
+                padding: 15px;
+            }
+            .log-container, .console-container {
+                height: 200px;
+            }
+            .header-title {
+                padding: 20px;
+            }
+            .header-title h2 {
+                font-size: 1.5rem;
+            }
+            .alert-popup {
+                min-width: 90vw;
+                max-width: 95vw;
+            }
+        }
+
+        /* زر التثبيت */
+        .install-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+            background: linear-gradient(45deg, #218838, #1e7e34);
+        }
+
+        .install-btn i {
+            margin-left: 8px;
+        }
+
+        .pwa-features {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .pwa-features small {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 5px;
+        }
+
+        /* أنماط شريط المستخدمين */
+        .users-bar .card {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .user-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .user-tab {
+            border: 2px solid transparent;
+            border-radius: 25px;
+            padding: 8px 15px;
+            margin: 2px;
+            font-weight: bold;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.9);
+        }
+
+        .user-tab.active {
+            background: rgba(0,0,0,0.1);
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .user-tab.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(0,0,0,0.05));
+            border-radius: 23px;
+        }
+
+        .user-tab i {
+            font-size: 1.1em;
+        }
+
+        /* تحسين شكل المستخدمين للجوال */
+        @media (max-width: 768px) {
+            .user-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .user-tab {
+                width: 200px;
+                text-align: center;
+            }
+        }
+
+        /* إضافة تأثير النبضة للمستخدم النشط */
+        .user-tab.active {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+            100% { box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة البداية (Splash) -->
+    <div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1e3c78 0%,#2a5298 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease;">
+      <img src="/static/icons/splash.jpg" alt="splash" style="width:min(70vw,320px);height:min(70vw,320px);object-fit:cover;border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,.5);border:4px solid rgba(255,255,255,.25);">
+      <h2 style="color:#fff;margin-top:24px;font-weight:700;text-align:center;padding:0 16px;">مركز سرعة انجاز</h2>
+      <p style="color:rgba(255,255,255,.85);margin-top:4px;">للخدمات الطلابية والأكاديمية</p>
+      <div class="spinner-border text-light mt-3" role="status"></div>
+    </div>
+    <script>
+      function __hideSplash() {
+        const s = document.getElementById('splashScreen');
+        if (s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 700); }
+      }
+      document.addEventListener('DOMContentLoaded', () => __hideSplash());
+      window.addEventListener('load', () => __hideSplash());
+      setTimeout(__hideSplash, 1000);
+    </script>
+
+    <div class="container-fluid mt-4">
+        <!-- شريط المستخدمين في الأعلى -->
+        <div class="users-bar mb-4">
+            <div class="card">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-center align-items-center flex-wrap">
+                        <small class="text-muted me-3 mb-2">اختر المستخدم:</small>
+                        <div class="user-tabs">
+                            {% for user_id, user_data in predefined_users.items() %}
+                            <button class="btn user-tab {% if user_id == current_user.id %}active{% endif %}"
+                                    id="userTab_{{ user_id }}"
+                                    data-user-id="{{ user_id }}"
+                                    data-default-name="{{ user_data.name }}"
+                                    style="color: {{ user_data.color }}; border-color: {{ user_data.color }};">
+                                <i class="{{ user_data.icon }} me-2"></i>
+                                <span class="user-tab-name">{{ user_data.name }}</span>
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <small class="text-info">
+                            <i class="fas fa-info-circle me-1"></i>
+                            المستخدم الحالي: <strong id="currentUserNameDisplay" style="color: {{ current_user.color }};">{{ current_user.name }}</strong>
+                            <span id="currentAccountNameDisplay" class="ms-2 badge bg-light text-dark" style="display:none;"></span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- مساحة للتنبيهات -->
+        <div id="alertContainer"></div>
+
+        <!-- مؤشر حالة المراقبة -->
+        <div class="monitoring-status">
+            <span id="monitoringIndicator" class="badge bg-secondary">
+                <i class="fas fa-circle"></i> غير نشط
+            </span>
+        </div>
+
+        <!-- العنوان الرئيسي الجديد -->
+        <div class="header-title">
+            <h2 class="mb-3">
+                <i class="fas fa-graduation-cap me-2"></i>
+                📚 تصميم وتنفيذ مركز سرعة انجاز
+            </h2>
+            <h4 class="mb-3">للخدمات الطلابية والأكاديمية</h4>
+            <p class="mb-2">
+                <i class="fab fa-whatsapp me-2"></i>
+                واتساب: 
+                <a href="https://wa.me/+966510349663" class="whatsapp-link" target="_blank">
+                    +966510349663
+                </a>
+            </p>
+            <div class="mt-3">
+                <small id="connectionStatus" class="badge bg-secondary">
+                    {% if connection_status == 'connected' %}
+                        <i class="fas fa-circle text-success"></i> متصل
+                    {% else %}
+                        <i class="fas fa-circle text-danger"></i> غير متصل
+                    {% endif %}
+                </small>
+            </div>
+
+            <!-- زر تثبيت التطبيق -->
+            <div class="text-center mt-3">
+                <button id="installAppBtn" class="btn install-btn" style="display: inline-block;">
+                    <i class="fas fa-download"></i>
+                    تثبيت التطبيق على الجوال
+                </button>
+
+                <div class="pwa-features">
+                    <small><i class="fas fa-mobile-alt"></i> يعمل على جميع الأجهزة</small>
+                    <small><i class="fas fa-wifi"></i> يعمل بدون إنترنت</small>
+                    <small><i class="fas fa-bell"></i> إشعارات فورية</small>
+                    <small><i class="fas fa-rocket"></i> سرعة عالية</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- لوحة تسجيل الدخول -->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-1">
+                            <i class="fas fa-telegram-plane me-2"></i>
+                            تسجيل الدخول
+                        </h2>
+                        <small id="connectionStatusHeader" class="badge bg-secondary">
+                            {% if connection_status == 'connected' %}
+                                <i class="fas fa-circle text-success"></i> متصل
+                            {% else %}
+                                <i class="fas fa-circle text-danger"></i> غير متصل
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">رقم الهاتف</label>
+                                <input type="tel" class="form-control" id="phone"
+                                        placeholder="+966xxxxxxxxx"
+                                        value="{{ settings.phone or '' }}"
+                                       required>
+                                <div class="form-text">أدخل رقم الهاتف مع رمز الدولة</div>
+                            </div>
+
+                            <div class="mb-3" id="passwordDiv" style="display: none;">
+                                <label for="password" class="form-label">كلمة مرور التليجرام (اختيارية)</label>
+                                <input type="password" class="form-control" id="password"
+                                        placeholder="كلمة المرور للتحقق الثنائي">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2" id="loginButtonContainer">
+                                    <button type="submit" class="btn btn-primary w-100" id="loginBtn">
+                                        <i class="fas fa-sign-in-alt me-2"></i>
+                                        تسجيل الدخول
+                                    </button>
+                                </div>
+
+                                <!-- أزرار إدارة الجلسة - تظهر بعد تسجيل الدخول -->
+                                <div class="col-md-6 mb-2" id="sessionControls" style="display: none;">
+                                    <button type="button" class="btn btn-danger w-100" id="logoutButton">
+                                        <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
+                                    </button>
+                                    <small class="text-muted d-block mt-1 text-center">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        إنهاء جلسة التليجرام نهائياً
+                                    </small>
+                                </div>
+                                
+                            </div>
+                        </form>
+
+                        <!-- نموذج التحقق من الكود -->
+                        <form id="verifyForm" style="display: none;">
+                            <div class="mb-3">
+                                <label for="verificationCode" class="form-label">كود التحقق</label>
+                                <input type="text" class="form-control" id="verificationCode"
+                                        placeholder="أدخل كود التحقق المرسل">
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-check me-2"></i>
+                                تأكيد الكود
+                            </button>
+                            <div class="row mt-2 g-2">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-primary btn-sm w-100" id="resendCodeBtn">
+                                        <i class="fas fa-redo me-1"></i>إعادة إرسال
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-warning btn-sm w-100" id="resendSmsBtn">
+                                        <i class="fas fa-sms me-1"></i>إرسال عبر SMS
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="text-muted d-block mt-2 text-center">
+                                <i class="fas fa-info-circle me-1"></i>
+                                الكود يصل أولاً داخل تطبيق تيليجرام. اضغط "إرسال عبر SMS" لاستلامه كرسالة نصية.
+                            </small>
+                        </form>
+
+                        <!-- نموذج كلمة المرور -->
+                        <form id="passwordForm" style="display: none;">
+                            <div class="mb-3">
+                                <label for="twoFactorPassword" class="form-label">كلمة مرور التحقق الثنائي</label>
+                                <input type="password" class="form-control" id="twoFactorPassword"
+                                        placeholder="أدخل كلمة المرور">
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-unlock me-2"></i>
+                                تأكيد كلمة المرور
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- إحصائيات الإرسال -->
+                <div class="card mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            إحصائيات الإرسال
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <h3 class="text-success" id="sentCount">0</h3>
+                                <small>رسائل مرسلة</small>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="text-danger" id="errorCount">0</h3>
+                                <small>أخطاء</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الوظائف الجديدة -->
+                <div class="card mt-3">
+                    <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, #1e3c78 0%, #2a5298 100%);">
+                        <h5 class="mb-0">
+                            <i class="fas fa-rocket me-2"></i>
+                            الوظائف الجديدة
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-6 col-md-4">
+                                <button type="button" class="btn btn-outline-primary w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center" id="btnLearningSystem" data-bs-toggle="modal" data-bs-target="#learningModal">
+                                    <i class="fas fa-brain fa-2x mb-2"></i>
+                                    <span class="small fw-bold">نظام التعلم الذكي</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <button type="button" class="btn btn-outline-success w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center" id="btnRotatingSystem" data-bs-toggle="modal" data-bs-target="#rotatingModal">
+                                    <i class="fas fa-sync-alt fa-2x mb-2"></i>
+                                    <span class="small fw-bold">النشر الدوري</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <button type="button" class="btn btn-outline-info w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center" id="btnSearchPublic" data-bs-toggle="modal" data-bs-target="#searchPublicModal">
+                                    <i class="fas fa-globe fa-2x mb-2"></i>
+                                    <span class="small fw-bold">البحث في القنوات العامة</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <button type="button" class="btn btn-outline-warning w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center" id="btnSearchMyLinks" data-bs-toggle="modal" data-bs-target="#searchMyLinksModal">
+                                    <i class="fas fa-search fa-2x mb-2"></i>
+                                    <span class="small fw-bold">البحث في روابطي</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <button type="button" class="btn btn-outline-danger w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center" id="btnAutoJoinAdvanced" data-bs-toggle="modal" data-bs-target="#autoJoinAdvancedModal">
+                                    <i class="fas fa-bolt fa-2x mb-2"></i>
+                                    <span class="small fw-bold">الانضمام المتقدم</span>
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <button type="button" class="btn btn-outline-secondary w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center" id="btnSystemHealth" onclick="checkSystemHealth()">
+                                    <i class="fas fa-heartbeat fa-2x mb-2"></i>
+                                    <span class="small fw-bold">صحة النظام</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- ── التطبيقات المدمجة ── -->
+                        <hr class="my-3">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <button type="button" class="btn w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center text-white"
+                                        style="background:linear-gradient(135deg,#1a5c3a,#2d9e6b);"
+                                        data-bs-toggle="modal" data-bs-target="#wfModal">
+                                    <i class="fas fa-file-word fa-2x mb-2"></i>
+                                    <span class="small fw-bold">منسّق الوثائق</span>
+                                    <small class="opacity-75" style="font-size:.7rem">Word / PDF / Excel</small>
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn w-100 h-100 py-3 d-flex flex-column align-items-center justify-content-center text-white"
+                                        style="background:linear-gradient(135deg,#667eea,#764ba2);"
+                                        data-bs-toggle="modal" data-bs-target="#pptxModal">
+                                    <i class="fas fa-file-powerpoint fa-2x mb-2"></i>
+                                    <span class="small fw-bold">منشئ العروض الذكي</span>
+                                    <small class="opacity-75" style="font-size:.7rem">PowerPoint • AI • محادثة</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- لوحة الإعدادات -->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cog me-2"></i>
+                            إعدادات المراقبة والإرسال
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="settingsForm">
+                            <div class="mb-3">
+                                <label for="message" class="form-label">الرسالة</label>
+                                <textarea class="form-control" id="message" rows="3"
+                                          placeholder="اكتب الرسالة المراد إرسالها">{{ settings.message or '' }}</textarea>
+                            </div>
+
+                            <!-- قسم رفع الصور المحسن -->
+                            <div class="mb-3">
+                                <label for="imageUpload" class="form-label">
+                                    <i class="fas fa-image me-2"></i>إضافة صور للرسالة (اختياري)
+                                </label>
+                                
+                                <!-- منطقة السحب والإفلات -->
+                                <div id="dropZone" class="border border-2 border-dashed border-secondary rounded p-4 text-center mb-3" 
+                                     style="min-height: 120px; cursor: pointer; transition: all 0.3s ease;">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
+                                    <h6 class="text-muted">اسحب الصور هنا أو انقر للاختيار</h6>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        يدعم: JPG, PNG, GIF, WebP | الحد الأقصى: 10MB لكل صورة
+                                    </p>
+                                    <input type="file" class="d-none" id="imageUpload" 
+                                           accept="image/jpeg,image/png,image/gif,image/webp" multiple>
+                                </div>
+                                
+                                <!-- معاينة الصور المرفوعة -->
+                                <div id="imagePreview" class="mt-3" style="display: none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0"><i class="fas fa-images me-2 text-primary"></i>الصور المحددة (<span id="imageCount">0</span>)</h6>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" id="clearImages">
+                                            <i class="fas fa-trash me-1"></i>مسح الكل
+                                        </button>
+                                    </div>
+                                    <div id="imagePreviewContainer" class="row g-2"></div>
+                                    <div class="alert alert-info mt-2 py-2" id="imageSendInfo">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <strong>ملاحظة:</strong> ستُرسل الصور مع الرسالة النصية معاً في نفس الرسالة
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="groups" class="form-label">مجموعات الإرسال</label>
+                                <textarea class="form-control" id="groups" rows="4"
+                                          placeholder="ضع كل مجموعة في سطر منفصل (@username أو اسم المجموعة)">{{ '\n'.join(settings.groups or []) }}</textarea>
+                                <div class="form-text">
+                                    📤 هذه المجموعات للإرسال فقط - المراقبة تشمل كامل الحساب تلقائياً
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="watchWords" class="form-label">كلمات المراقبة (اختيارية)</label>
+                                <textarea class="form-control" id="watchWords" rows="3"
+                                          placeholder="ضع كل كلمة في سطر منفصل (اتركها فارغة لمراقبة كل الرسائل)">{{ '\n'.join(settings.watch_words or []) }}</textarea>
+                                <div class="form-text">
+                                    ⚠️ المراقبة تشمل كامل المجموعات والمحادثات في الحساب
+                                    <br>🔹 إذا حددت كلمات: سيتم التنبيه عند ورود هذه الكلمات فقط
+                                    <br>🔹 إذا تركتها فارغة: سيتم التنبيه لكل الرسائل الجديدة
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sendType" class="form-label">نوع الإرسال</label>
+                                <select class="form-select" id="sendType">
+                                    <option value="manual" {{ 'selected' if settings.send_type == 'manual' else '' }}>يدوي</option>
+                                    <option value="scheduled" {{ 'selected' if settings.send_type == 'scheduled' else '' }}>مجدول</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3" id="intervalDiv" style="{{ 'display: none;' if settings.send_type != 'scheduled' else '' }}">
+                                <label for="intervalSeconds" class="form-label">فترة الإرسال (بالثواني)</label>
+                                <input type="number" class="form-control" id="intervalSeconds"
+                                       value="{{ settings.interval_seconds or 3600 }}" min="60">
+                                <div class="form-text">الحد الأدنى: 60 ثانية</div>
+                            </div>
+
+                            <!-- حقل الوقت المحدد للإرسال المجدول -->
+                            <div class="mb-3" id="scheduledTimeDiv" style="{{ 'display: none;' if settings.send_type != 'scheduled' else '' }}">
+                                <label for="scheduledTime" class="form-label">
+                                    <i class="fas fa-clock me-2"></i>الوقت المحدد للإرسال
+                                </label>
+                                <input type="datetime-local" class="form-control" id="scheduledTime"
+                                       value="{{ settings.scheduled_time or '' }}">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    حدد التاريخ والوقت المطلوب للإرسال التلقائي
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-save me-2"></i>
+                                        حفظ الإعدادات
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-primary w-100" id="sendNowBtn">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        إرسال الآن
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- أزرار التحكم -->
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-2">
+                                <button class="btn btn-warning w-100" id="startMonitoringBtn">
+                                    <i class="fas fa-play me-2"></i>
+                                    بدء المراقبة
+                                </button>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <button class="btn btn-danger w-100" id="stopMonitoringBtn" style="display: none;">
+                                    <i class="fas fa-stop me-2"></i>
+                                    إيقاف المراقبة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- سجل العمليات -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            سجل العمليات
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="operationsLog" class="log-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- وحدة التحكم -->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-terminal me-2"></i>
+                            وحدة التحكم
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="consoleLog" class="console-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- تحميل المكتبات -->
+    <!-- مودالات الوظائف الجديدة -->
+
+    <!-- 1) نظام التعلم الذكي -->
+    <div class="modal fade" id="learningModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title"><i class="fas fa-brain me-2"></i>نظام التعلم الذكي</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <strong>الحالة:</strong>
+                <span id="learningStatusBadge" class="badge bg-secondary">غير مفعل</span>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="learningToggle">
+                <label class="form-check-label" for="learningToggle">تفعيل البوت التعليمي</label>
+              </div>
+            </div>
+
+            <hr>
+            <h6 class="mb-3"><i class="fas fa-plus-circle me-2 text-primary"></i>إضافة خدمة جديدة</h6>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4"><input type="text" class="form-control" id="learningServiceName" placeholder="اسم الخدمة"></div>
+              <div class="col-md-8"><input type="text" class="form-control" id="learningServiceDesc" placeholder="وصف الخدمة"></div>
+              <div class="col-12"><input type="text" class="form-control" id="learningServiceKeywords" placeholder="كلمات مفتاحية مفصولة بفاصلة (مثال: بحث, ترجمة, تصميم)"></div>
+              <div class="col-12"><button class="btn btn-primary w-100" id="addLearningService"><i class="fas fa-plus me-2"></i>إضافة الخدمة</button></div>
+            </div>
+
+            <hr>
+            <h6 class="mb-2"><i class="fas fa-list me-2 text-info"></i>الخدمات المسجلة</h6>
+            <div id="learningServicesList" class="mb-3"><small class="text-muted">جارِ التحميل...</small></div>
+
+            <hr>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0"><i class="fas fa-question-circle me-2 text-warning"></i>طلبات غير معروفة</h6>
+              <button class="btn btn-sm btn-outline-danger" id="clearUnknownBtn"><i class="fas fa-trash me-1"></i>مسح الكل</button>
+            </div>
+            <div id="learningUnknownList"><small class="text-muted">لا توجد طلبات</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2) النشر الدوري -->
+    <div class="modal fade" id="rotatingModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title"><i class="fas fa-sync-alt me-2"></i>النشر الدوري المتسلسل</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>أرسل حتى 5 رسائل بالتناوب إلى مجموعات محددة كل عدة دقائق.</div>
+            <div class="mb-2">
+              <label class="form-label fw-bold">الرسائل (5 كحد أقصى)</label>
+              <textarea class="form-control mb-1" id="rotMsg1" rows="2" placeholder="الرسالة 1"></textarea>
+              <textarea class="form-control mb-1" id="rotMsg2" rows="2" placeholder="الرسالة 2"></textarea>
+              <textarea class="form-control mb-1" id="rotMsg3" rows="2" placeholder="الرسالة 3"></textarea>
+              <textarea class="form-control mb-1" id="rotMsg4" rows="2" placeholder="الرسالة 4"></textarea>
+              <textarea class="form-control mb-1" id="rotMsg5" rows="2" placeholder="الرسالة 5"></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="form-label fw-bold">المجموعات (رابط أو @username لكل سطر)</label>
+              <textarea class="form-control" id="rotGroups" rows="4" placeholder="https://t.me/group1&#10;@group2"></textarea>
+            </div>
+            <div class="card border-success mb-3">
+              <div class="card-header bg-success bg-opacity-10 text-success fw-bold">
+                <i class="fas fa-clock me-2"></i>الفترة الزمنية بين الإرسال
+              </div>
+              <div class="card-body">
+                <div class="row g-2 align-items-end">
+                  <div class="col-md-6">
+                    <label class="form-label">المدة</label>
+                    <input type="number" class="form-control form-control-lg text-center fw-bold" id="rotInterval" min="1" value="5" style="font-size:1.4rem;">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">الوحدة</label>
+                    <select class="form-select form-select-lg" id="rotIntervalUnit">
+                      <option value="seconds">ثانية</option>
+                      <option value="minutes" selected>دقيقة</option>
+                      <option value="hours">ساعة</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <small class="text-muted d-block mb-2">اختيار سريع:</small>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-success rot-preset" data-val="30" data-unit="seconds">30 ثانية</button>
+                    <button type="button" class="btn btn-sm btn-outline-success rot-preset" data-val="1"  data-unit="minutes">دقيقة</button>
+                    <button type="button" class="btn btn-sm btn-outline-success rot-preset" data-val="5"  data-unit="minutes">5 دقائق</button>
+                    <button type="button" class="btn btn-sm btn-outline-success rot-preset" data-val="15" data-unit="minutes">15 دقيقة</button>
+                    <button type="button" class="btn btn-sm btn-outline-success rot-preset" data-val="30" data-unit="minutes">30 دقيقة</button>
+                    <button type="button" class="btn btn-sm btn-outline-success rot-preset" data-val="1"  data-unit="hours">ساعة</button>
+                    <button type="button" class="btn btn-sm btn-outline-success rot-preset" data-val="3"  data-unit="hours">3 ساعات</button>
+                  </div>
+                </div>
+                <div class="alert alert-info mt-3 mb-0 py-2">
+                  <i class="fas fa-info-circle me-1"></i>
+                  سيتم الإرسال كل: <strong id="rotIntervalSummary">5 دقيقة</strong>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+              <span><strong>الحالة:</strong> <span id="rotStatusBadge" class="badge bg-secondary">متوقف</span></span>
+              <span id="rotCountdownWrap" style="display:none;">
+                ⏱️ الإرسال القادم خلال: <strong id="rotCountdownDisplay" class="text-success">--</strong>
+              </span>
+            </div>
+            <div class="row g-2">
+              <div class="col-md-4"><button class="btn btn-primary w-100" id="rotSaveBtn"><i class="fas fa-save me-2"></i>حفظ</button></div>
+              <div class="col-md-4"><button class="btn btn-success w-100" id="rotStartBtn"><i class="fas fa-play me-2"></i>بدء</button></div>
+              <div class="col-md-4"><button class="btn btn-danger w-100" id="rotStopBtn"><i class="fas fa-stop me-2"></i>إيقاف</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3) البحث في القنوات العامة -->
+    <div class="modal fade" id="searchPublicModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title"><i class="fas fa-globe me-2"></i>البحث في القنوات العامة</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-2 mb-3">
+              <div class="col-md-8"><input type="text" class="form-control" id="searchPublicQuery" placeholder="نص للبحث (مثال: تصميم, برمجة, كتب)"></div>
+              <div class="col-md-2"><input type="number" class="form-control" id="searchPublicLimit" min="1" max="100" value="50" placeholder="عدد النتائج"></div>
+              <div class="col-md-2"><button class="btn btn-info text-white w-100" id="searchPublicBtn"><i class="fas fa-search me-1"></i>بحث</button></div>
+            </div>
+            <div id="searchPublicResults"><small class="text-muted">لم يتم البحث بعد</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4) البحث في روابطي -->
+    <div class="modal fade" id="searchMyLinksModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title"><i class="fas fa-search me-2"></i>البحث في روابطي</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>يبحث عن جميع روابط التليجرام في محادثاتك خلال فترة محددة.</div>
+            <div class="row g-2 mb-3">
+              <div class="col-md-8"><label class="form-label">عدد الأيام للبحث (1 - 365)</label><input type="number" class="form-control" id="myLinksDays" min="1" max="365" value="60"></div>
+              <div class="col-md-4 d-flex align-items-end"><button class="btn btn-warning w-100" id="searchMyLinksBtn"><i class="fas fa-search me-1"></i>بدء البحث</button></div>
+            </div>
+            <div id="myLinksResults"><small class="text-muted">لم يتم البحث بعد</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5) الانضمام التلقائي المتقدم -->
+    <div class="modal fade" id="autoJoinAdvancedModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title"><i class="fas fa-bolt me-2"></i>الانضمام التلقائي المتقدم</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label fw-bold">روابط المجموعات (سطر لكل رابط)</label>
+              <textarea class="form-control" id="advLinks" rows="6" placeholder="https://t.me/group1&#10;https://t.me/+invite&#10;@channel"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">التأخير بين كل انضمام (ثواني)</label>
+              <input type="number" class="form-control" id="advDelay" min="1" value="3">
+            </div>
+            <button class="btn btn-danger w-100" id="advJoinBtn"><i class="fas fa-bolt me-2"></i>بدء الانضمام المتقدم</button>
+            <hr>
+            <div id="advJoinResults"><small class="text-muted">لم يبدأ الانضمام بعد</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6) صحة النظام -->
+    <div class="modal fade" id="systemHealthModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-secondary text-white">
+            <h5 class="modal-title"><i class="fas fa-heartbeat me-2"></i>صحة النظام</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="systemHealthContent"><small class="text-muted">جارِ التحميل...</small></div>
+            <button class="btn btn-outline-secondary w-100 mt-2" id="reloadHealthBtn"><i class="fas fa-redo me-1"></i>تحديث</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ============== Helpers ==============
+      async function apiCall(url, method = 'GET', body = null) {
+        const opts = { method, headers: { 'Content-Type': 'application/json' } };
+        if (body) opts.body = JSON.stringify(body);
+        const res = await fetch(url, opts);
+        return res.json();
+      }
+      function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+      // ============== 1) نظام التعلم الذكي ==============
+      async function loadLearningStatus() {
+        const r = await apiCall('/api/learning/status');
+        if (r.success) {
+          document.getElementById('learningToggle').checked = r.active;
+          const b = document.getElementById('learningStatusBadge');
+          b.textContent = r.active ? 'مفعل' : 'غير مفعل';
+          b.className = 'badge ' + (r.active ? 'bg-success' : 'bg-secondary');
+        }
+      }
+      async function loadLearningServices() {
+        const r = await apiCall('/api/learning/services');
+        const list = document.getElementById('learningServicesList');
+        if (r.success && r.services && Object.keys(r.services).length) {
+          list.innerHTML = Object.entries(r.services).map(([name, info]) => `
+            <div class="d-flex justify-content-between align-items-start border rounded p-2 mb-2">
+              <div><strong>${escapeHtml(name)}</strong><br><small class="text-muted">${escapeHtml(info.description || '')}</small></div>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteLearningService('${escapeHtml(name)}')"><i class="fas fa-trash"></i></button>
+            </div>`).join('');
+        } else {
+          list.innerHTML = '<small class="text-muted">لا توجد خدمات مسجلة بعد</small>';
+        }
+      }
+      async function loadLearningUnknown() {
+        const r = await apiCall('/api/learning/unknown_requests');
+        const list = document.getElementById('learningUnknownList');
+        if (r.success && r.requests && r.requests.length) {
+          list.innerHTML = r.requests.map(u => `
+            <div class="border-start border-warning border-3 ps-2 mb-2">
+              <div><strong>${escapeHtml(u.sender || '')}</strong> <small class="text-muted">${escapeHtml(u.time || '')}</small></div>
+              <div>${escapeHtml(u.text || '')}</div>
+            </div>`).join('');
+        } else {
+          list.innerHTML = '<small class="text-muted">لا توجد طلبات</small>';
+        }
+      }
+      async function deleteLearningService(name) {
+        await apiCall('/api/learning/delete_service', 'POST', { name });
+        loadLearningServices();
+      }
+      document.getElementById('learningToggle').addEventListener('change', async e => {
+        await apiCall('/api/learning/toggle', 'POST', { active: e.target.checked });
+        loadLearningStatus();
+      });
+      document.getElementById('addLearningService').addEventListener('click', async () => {
+        const name = document.getElementById('learningServiceName').value.trim();
+        const description = document.getElementById('learningServiceDesc').value.trim();
+        const keywords = document.getElementById('learningServiceKeywords').value.split(',').map(k => k.trim()).filter(Boolean);
+        if (!name || !description) { alert('الاسم والوصف مطلوبان'); return; }
+        const r = await apiCall('/api/learning/add_service', 'POST', { name, description, keywords });
+        alert(r.message || '');
+        if (r.success) {
+          document.getElementById('learningServiceName').value = '';
+          document.getElementById('learningServiceDesc').value = '';
+          document.getElementById('learningServiceKeywords').value = '';
+          loadLearningServices();
+        }
+      });
+      document.getElementById('clearUnknownBtn').addEventListener('click', async () => {
+        await apiCall('/api/learning/clear_unknown', 'POST');
+        loadLearningUnknown();
+      });
+      document.getElementById('learningModal').addEventListener('show.bs.modal', () => {
+        loadLearningStatus(); loadLearningServices(); loadLearningUnknown();
+      });
+
+      // ============== 2) النشر الدوري ==============
+      function rotUpdateSummary() {
+        const v = parseInt(document.getElementById('rotInterval').value || '0');
+        const u = document.getElementById('rotIntervalUnit').value;
+        const labels = { seconds: 'ثانية', minutes: 'دقيقة', hours: 'ساعة' };
+        document.getElementById('rotIntervalSummary').textContent = `${v} ${labels[u] || ''}`;
+      }
+      function rotIntervalToMinutes() {
+        const v = parseInt(document.getElementById('rotInterval').value || '5');
+        const u = document.getElementById('rotIntervalUnit').value;
+        if (u === 'seconds') return Math.max(1, Math.round(v / 60 * 100) / 100);
+        if (u === 'hours')   return v * 60;
+        return v;
+      }
+      function rotMinutesToBest(mins) {
+        if (mins >= 60 && mins % 60 === 0) return { v: mins / 60, u: 'hours' };
+        if (mins < 1) return { v: Math.max(1, Math.round(mins * 60)), u: 'seconds' };
+        return { v: mins, u: 'minutes' };
+      }
+      async function loadRotatingStatus() {
+        const r = await apiCall('/api/rotating/status');
+        if (r.success) {
+          const b = document.getElementById('rotStatusBadge');
+          b.textContent = r.active ? 'يعمل الآن' : 'متوقف';
+          b.className = 'badge ' + (r.active ? 'bg-success' : 'bg-secondary');
+          (r.messages || []).slice(0, 5).forEach((m, i) => {
+            const el = document.getElementById('rotMsg' + (i + 1));
+            if (el) el.value = m || '';
+          });
+          document.getElementById('rotGroups').value = (r.groups || []).join('\n');
+          const best = rotMinutesToBest(r.interval || 5);
+          document.getElementById('rotInterval').value = best.v;
+          document.getElementById('rotIntervalUnit').value = best.u;
+          rotUpdateSummary();
+          // عداد تنازلي
+          const wrap = document.getElementById('rotCountdownWrap');
+          if (r.active && r.next_send_in != null) {
+            if (wrap) wrap.style.display = 'inline';
+            startRotCountdown(r.next_send_in);
+          } else {
+            if (wrap) wrap.style.display = 'none';
+            clearInterval(_rotCountdown);
+          }
+        }
+      }
+      function rotCollect() {
+        const messages = [1,2,3,4,5].map(i => document.getElementById('rotMsg' + i).value);
+        const groups = document.getElementById('rotGroups').value.split('\n').map(s => s.trim()).filter(Boolean);
+        const interval = rotIntervalToMinutes();
+        return { messages, groups, interval };
+      }
+      document.getElementById('rotInterval').addEventListener('input', rotUpdateSummary);
+      document.getElementById('rotIntervalUnit').addEventListener('change', rotUpdateSummary);
+      document.querySelectorAll('.rot-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('rotInterval').value = btn.dataset.val;
+          document.getElementById('rotIntervalUnit').value = btn.dataset.unit;
+          rotUpdateSummary();
+        });
+      });
+      document.getElementById('rotSaveBtn').addEventListener('click', async () => {
+        const r = await apiCall('/api/rotating/save', 'POST', rotCollect());
+        alert(r.message || '');
+      });
+      document.getElementById('rotStartBtn').addEventListener('click', async () => {
+        await apiCall('/api/rotating/save', 'POST', rotCollect());
+        const r = await apiCall('/api/rotating/start', 'POST');
+        alert(r.message || ''); loadRotatingStatus();
+      });
+      document.getElementById('rotStopBtn').addEventListener('click', async () => {
+        const r = await apiCall('/api/rotating/stop', 'POST');
+        alert(r.message || ''); loadRotatingStatus();
+      });
+      document.getElementById('rotatingModal').addEventListener('show.bs.modal', loadRotatingStatus);
+
+      // ============== 3) البحث في القنوات العامة ==============
+      document.getElementById('searchPublicBtn').addEventListener('click', async () => {
+        const query = document.getElementById('searchPublicQuery').value.trim();
+        const limit = parseInt(document.getElementById('searchPublicLimit').value || '50');
+        const out = document.getElementById('searchPublicResults');
+        if (!query) { out.innerHTML = '<div class="alert alert-warning">يرجى كتابة نص للبحث</div>'; return; }
+        out.innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin fa-2x text-info"></i></div>';
+        const r = await apiCall('/api/search_public_channels', 'POST', { query, limit });
+        if (!r.success) { out.innerHTML = `<div class="alert alert-danger">${escapeHtml(r.message || 'فشل البحث')}</div>`; return; }
+        const items = r.results || r.channels || r.data || [];
+        if (!items.length) { out.innerHTML = '<div class="alert alert-secondary">لا توجد نتائج</div>'; return; }
+        out.innerHTML = items.map(it => `
+          <div class="border rounded p-2 mb-2">
+            <div><strong>${escapeHtml(it.title || it.name || it.username || 'بدون اسم')}</strong></div>
+            <small class="text-muted">${escapeHtml(it.username ? '@' + it.username : '')}</small>
+            ${it.url ? `<div><a href="${escapeHtml(it.url)}" target="_blank">${escapeHtml(it.url)}</a></div>` : ''}
+          </div>`).join('');
+      });
+
+      // ============== 4) البحث في روابطي ==============
+      document.getElementById('searchMyLinksBtn').addEventListener('click', async () => {
+        const days = parseInt(document.getElementById('myLinksDays').value || '60');
+        const out = document.getElementById('myLinksResults');
+        out.innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin fa-2x text-warning"></i><div class="small mt-2 text-muted">قد يستغرق دقائق...</div></div>';
+        const r = await apiCall('/api/search_my_links', 'POST', { days });
+        if (!r.success) { out.innerHTML = `<div class="alert alert-danger">${escapeHtml(r.message || 'فشل البحث')}</div>`; return; }
+        const items = r.links || [];
+        if (!items.length) { out.innerHTML = '<div class="alert alert-secondary">لم يتم العثور على روابط</div>'; return; }
+        out.innerHTML = `<div class="alert alert-success">${items.length} رابط</div>` + items.map(l => `
+          <div class="border rounded p-2 mb-2">
+            <div><a href="${escapeHtml(l.url)}" target="_blank">${escapeHtml(l.url)}</a></div>
+            <small class="text-muted">من: ${escapeHtml(l.chat_title || '')} • ${escapeHtml(l.date || '')}</small>
+          </div>`).join('');
+      });
+
+      // ============== 5) الانضمام التلقائي المتقدم ==============
+      document.getElementById('advJoinBtn').addEventListener('click', async () => {
+        const links = document.getElementById('advLinks').value.split('\n').map(s => s.trim()).filter(Boolean);
+        const delay = parseInt(document.getElementById('advDelay').value || '3');
+        const out = document.getElementById('advJoinResults');
+        if (!links.length) { out.innerHTML = '<div class="alert alert-warning">أضف رابط واحد على الأقل</div>'; return; }
+        out.innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin fa-2x text-danger"></i></div>';
+        const r = await apiCall('/api/auto_join/advanced', 'POST', { links, delay });
+        out.innerHTML = `<div class="alert ${r.success ? 'alert-success' : 'alert-danger'}">${escapeHtml(r.message || (r.success ? 'تم بدء الانضمام' : 'فشل'))}</div>`;
+      });
+
+      // ============== 6) صحة النظام ==============
+      async function loadSystemHealth() {
+        const out = document.getElementById('systemHealthContent');
+        out.innerHTML = '<div class="text-center py-3"><i class="fas fa-spinner fa-spin fa-2x text-secondary"></i></div>';
+        try {
+          const r = await fetch('/api/system_health').then(x => x.json());
+          out.innerHTML = `<pre class="bg-dark text-success p-3 rounded" style="max-height:400px;overflow:auto;">${escapeHtml(JSON.stringify(r, null, 2))}</pre>`;
+        } catch (e) {
+          out.innerHTML = `<div class="alert alert-danger">${escapeHtml(e.message)}</div>`;
+        }
+      }
+      function checkSystemHealth() {
+        const m = new bootstrap.Modal(document.getElementById('systemHealthModal'));
+        m.show();
+        loadSystemHealth();
+      }
+      document.getElementById('reloadHealthBtn').addEventListener('click', loadSystemHealth);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="/static/js/app.js"></script>
+
+    <!-- PWA و Service Worker -->
+    <script>
+        // متغيرات PWA
+        const installAppBtn = document.getElementById('installAppBtn');
+
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('✅ Service Worker registered successfully:', registration.scope);
+
+                        // التحقق من وجود تحديثات
+                        registration.addEventListener('updatefound', function() {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', function() {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // عرض إشعار التحديث
+                                    showUpdateNotification();
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(err) {
+                        console.error('❌ Service Worker registration failed:', err);
+                    });
+            });
+        }
+
+        // معالجة حدث beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', function(e) {
+            console.log('📱 PWA: Install prompt triggered');
+            e.preventDefault();
+            globalDeferredPrompt = e;
+
+            // إظهار زر التثبيت
+            installAppBtn.style.display = 'inline-block';
+
+            // تأثير لفت النظر
+            installAppBtn.classList.add('animate__animated', 'animate__pulse');
+        });
+
+        // معالجة النقر على زر التثبيت
+        installAppBtn.addEventListener('click', async function() {
+            if (!globalDeferredPrompt) {
+                showNotification('التطبيق مثبت بالفعل أو غير متاح للتثبيت', 'info');
+                return;
+            }
+
+            try {
+                // عرض نافذة التثبيت
+                globalDeferredPrompt.prompt();
+
+                // انتظار اختيار المستخدم
+                const { outcome } = await globalDeferredPrompt.userChoice;
+
+                if (outcome === 'accepted') {
+                    console.log('✅ PWA: User accepted the install prompt');
+                    showNotification('🎉 تم تثبيت التطبيق بنجاح!', 'success');
+
+                    // إخفاء زر التثبيت
+                    installAppBtn.style.display = 'none';
+                } else {
+                    console.log('❌ PWA: User dismissed the install prompt');
+                    showNotification('تم إلغاء التثبيت', 'warning');
+                }
+
+                globalDeferredPrompt = null;
+            } catch (error) {
+                console.error('❌ PWA: Error during installation:', error);
+                showNotification('حدث خطأ أثناء التثبيت', 'error');
+            }
+        });
+
+        // معالجة حدث التثبيت الناجح
+        window.addEventListener('appinstalled', function(e) {
+            console.log('🎉 PWA: App installed successfully');
+            showNotification('تم تثبيت التطبيق بنجاح! يمكنك الآن الوصول إليه من الشاشة الرئيسية', 'success');
+            installAppBtn.style.display = 'none';
+
+            // إرسال إحصائية التثبيت
+            if (window.gtag) {
+                gtag('event', 'pwa_install', {
+                    'event_category': 'PWA',
+                    'event_label': 'App Installed'
+                });
+            }
+        });
+
+        // دالة عرض إشعار التحديث
+        function showUpdateNotification() {
+            const updateDiv = document.createElement('div');
+            updateDiv.className = 'alert alert-info alert-dismissible fade show position-fixed';
+            updateDiv.style.cssText = 'top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; max-width: 400px;';
+            updateDiv.innerHTML = `
+                <strong>🔄 تحديث متاح!</strong>
+                <p class="mb-2">يتوفر إصدار جديد من التطبيق</p>
+                <button class="btn btn-sm btn-primary me-2" onclick="updateApp()">تحديث الآن</button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(updateDiv);
+        }
+
+        // دالة تحديث التطبيق
+        function updateApp() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(function(registration) {
+                    if (registration && registration.waiting) {
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+
+        // التحقق من إمكانية التثبيت على iOS
+        function checkIOSInstall() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isStandalone = window.navigator.standalone;
+
+            if (isIOS && !isStandalone) {
+                // عرض تعليمات التثبيت لـ iOS
+                const iosInstructions = document.createElement('div');
+                iosInstructions.className = 'alert alert-info mt-3';
+                iosInstructions.innerHTML = `
+                    <h6><i class="fab fa-apple"></i> للتثبيت على iOS:</h6>
+                    <small>
+                        1️⃣ اضغط على زر المشاركة <i class="fas fa-share"></i><br>
+                        2️⃣ اختر "إضافة إلى الشاشة الرئيسية"<br>
+                        3️⃣ اضغط "إضافة"
+                    </small>
+                `;
+                installAppBtn.parentNode.appendChild(iosInstructions);
+            }
+        }
+
+        // تشغيل فحص iOS عند تحميل الصفحة
+        window.addEventListener('load', checkIOSInstall);
+
+        // معالجة التنبيهات المخصصة
+        function showPWANotification(title, body, icon) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: icon || '/static/icons/icon-192x192.png',
+                    badge: '/static/icons/icon-72x72.png',
+                    vibrate: [100, 50, 100]
+                });
+            }
+        }
+
+        // طلب إذن التنبيهات
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') {
+                        showNotification('تم تفعيل التنبيهات بنجاح', 'success');
+                    }
+                });
+            }
+        }
+
+        // تفعيل طلب التنبيهات عند أول تفاعل
+        document.addEventListener('click', function() {
+            requestNotificationPermission();
+        }, { once: true });
+
+        console.log('✅ PWA: Scripts loaded successfully');
+
+        // =========================== 
+        // نظام التبديل بين المستخدمين - مبسط ومحسن
+        // ===========================
+        
+        var globalCurrentUserId = '{{ current_user.id }}';
+        var globalDeferredPrompt = null;
+        
+        console.log('✅ Multi-user system initialized');
+
+        
+        console.log('✅ Auto join system initialized');
+
+        function startRotCountdown(nextSendIn) {
+          clearInterval(_rotCountdown);
+          let remaining = Math.round(nextSendIn);
+          const el = document.getElementById('rotCountdownDisplay');
+          if (!el) return;
+          function fmt(s) {
+            const m = Math.floor(s / 60), sec = s % 60;
+            return m > 0 ? `${m}د ${sec}ث` : `${sec}ث`;
+          }
+          el.textContent = fmt(remaining);
+          el.style.display = 'inline-block';
+          _rotCountdown = setInterval(() => {
+            remaining--;
+            if (remaining <= 0) {
+              clearInterval(_rotCountdown);
+              el.textContent = '⌛ الآن...';
+              setTimeout(() => loadRotatingStatus(), 1500);
+            } else {
+              el.textContent = fmt(remaining);
+            }
+          }, 1000);
+        }
+        
+    </script>
+
+  <iframe id="embeddedAppFrame" src="" style="flex:1;border:none;width:100%;background:#fff;" allow="clipboard-write"></iframe>
+</div>
+
+
+<!-- ══ منسّق الوثائق — React App مدمج مباشرة ══ -->
+<div class="modal fade" id="wfModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content" style="border-radius:0;overflow:hidden;">
+      <div class="modal-header py-2" style="background:#1a5c3a;color:#fff;">
+        <h5 class="modal-title"><i class="fas fa-file-word me-2"></i>منسّق الوثائق — Word / PDF / Excel</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0" style="height:calc(100vh - 57px);overflow-y:auto;background:#f5f7fa;">
+        <div id="root"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ منشئ العروض التقديمية — مدمج كاملاً ══ -->
+<div class="modal fade" id="pptxModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content" style="border-radius:0;">
+      <div class="modal-header py-2" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;flex-shrink:0;">
+        <h5 class="modal-title">📊 منشئ العروض التقديمية الذكي</h5>
+        <div id="pptxAiBadge" class="ms-3" style="font-size:.82rem;"></div>
+        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0" style="height:calc(100vh - 57px);overflow:hidden;display:flex;flex-direction:column;">
+        <ul class="nav nav-tabs bg-white px-3 pt-2 border-bottom flex-shrink-0" id="pptxTabs" role="tablist">
+          <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pptxT1" type="button">✏️ إنشاء عرض</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#pptxT2" type="button">💻 HTML → PPTX</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#pptxT3" type="button">🎨 مواقع التصاميم</button></li>
+          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#pptxT4" type="button">💬 AI محادثة</button></li>
+        </ul>
+        <div class="tab-content" style="flex:1;overflow-y:auto;background:#f0f2ff;">
+
+          <!-- ── تبويب 1: إنشاء عرض ── -->
+          <div class="tab-pane fade show active p-3" id="pptxT1">
+            <div class="row g-3">
+              <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-3"><div class="card-body">
+                  <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">📁 مصدر المحتوى</h6>
+                  <div class="btn-group w-100 mb-3" role="group">
+                    <input type="radio" class="btn-check" name="pptxInputMethod" id="pptxMethodText" value="text" checked>
+                    <label class="btn btn-outline-primary" for="pptxMethodText">✍️ نص حر</label>
+                    <input type="radio" class="btn-check" name="pptxInputMethod" id="pptxMethodFile" value="file">
+                    <label class="btn btn-outline-primary" for="pptxMethodFile">📄 رفع ملف (Word / PDF)</label>
+                  </div>
+                  <div id="pptxTextArea"><textarea class="form-control" id="pptxContent" rows="7" placeholder="اكتب أو الصق المحتوى هنا..."></textarea></div>
+                  <div id="pptxFileArea" style="display:none;">
+                    <input type="file" class="form-control mb-2" id="pptxFile" accept=".docx,.doc,.pdf,.txt,.md">
+                    <div id="pptxFileInfo"></div>
+                  </div>
+                </div></div>
+
+                <div class="card border-0 shadow-sm mb-3"><div class="card-body">
+                  <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">🏷️ عنوان العرض</h6>
+                  <input type="text" class="form-control" id="pptxTitle" placeholder="مثال: خطة التطوير الاستراتيجي 2025 (اختياري)">
+                </div></div>
+
+                <div class="card border-0 shadow-sm mb-3"><div class="card-body">
+                  <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">🖼️ صفحة الغلاف</h6>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="pptxAddCover">
+                    <label class="form-check-label" for="pptxAddCover">إضافة صفحة غلاف مخصصة</label>
+                  </div>
+                  <div id="pptxCoverFields" style="display:none;">
+                    <div class="row g-2">
+                      <div class="col-6"><input type="text" class="form-control form-control-sm" id="pptxCoverTitle" placeholder="العنوان الرئيسي *"></div>
+                      <div class="col-6"><input type="text" class="form-control form-control-sm" id="pptxCoverSubtitle" placeholder="العنوان الفرعي"></div>
+                      <div class="col-6"><input type="text" class="form-control form-control-sm" id="pptxCoverOrg" placeholder="اسم المؤسسة"></div>
+                      <div class="col-6"><input type="text" class="form-control form-control-sm" id="pptxCoverPresenter" placeholder="اسم المقدّم"></div>
+                      <div class="col-6"><input type="text" class="form-control form-control-sm" id="pptxCoverDate" placeholder="التاريخ"></div>
+                      <div class="col-6"><input type="text" class="form-control form-control-sm" id="pptxCoverIcon" value="📊" placeholder="أيقونة"></div>
+                      <div class="col-12"><textarea class="form-control form-control-sm" id="pptxCoverNote" rows="2" placeholder="ملاحظة إضافية"></textarea></div>
+                    </div>
+                  </div>
+                </div></div>
+
+                <div class="card border-0 shadow-sm mb-3"><div class="card-body">
+                  <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">⚙️ إعدادات العرض</h6>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label class="form-label small fw-bold">عدد الشرائح: <span id="pptxSlideCount">6</span></label>
+                      <input type="range" class="form-range" id="pptxNumSlides" min="3" max="15" value="6" oninput="document.getElementById('pptxSlideCount').textContent=this.value">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-bold">اللون</label>
+                      <select class="form-select form-select-sm" id="pptxTheme">
+                        <option value="blue">🔵 أزرق</option>
+                        <option value="green">🟢 أخضر</option>
+                        <option value="red">🔴 أحمر</option>
+                        <option value="purple">🟣 بنفسجي</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-bold">نوع العرض</label>
+                      <select class="form-select form-select-sm" id="pptxType">
+                        <option value="general">📄 عام</option>
+                        <option value="business">💼 تجاري</option>
+                        <option value="educational">📚 تعليمي</option>
+                        <option value="sales">💰 تسويقي</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-check"><input class="form-check-input" type="checkbox" id="pptxIncTables"><label class="form-check-label small" for="pptxIncTables">تضمين الجداول</label></div>
+                      <div class="form-check"><input class="form-check-input" type="checkbox" id="pptxIncCharts"><label class="form-check-label small" for="pptxIncCharts">رسوم بيانية</label></div>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-bold">نوع الخط</label>
+                      <select class="form-select form-select-sm" id="pptxFont">
+                        <option>Traditional Arabic</option>
+                        <option>Simplified Arabic</option>
+                        <option>Dubai</option>
+                        <option>Arabic Typesetting</option>
+                        <option>Times New Roman</option>
+                        <option>Arial</option>
+                        <option>Calibri</option>
+                        <option>Tahoma</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small fw-bold">حجم الخط: <span id="pptxFontSizeVal">22</span></label>
+                      <input type="range" class="form-range" id="pptxFontSize" min="14" max="34" value="22" oninput="document.getElementById('pptxFontSizeVal').textContent=this.value">
+                    </div>
+                  </div>
+                </div></div>
+
+                <button class="btn btn-primary w-100 py-3 fw-bold fs-5" id="pptxGenBtn" onclick="pptxGenerate()">🚀 إنشاء العرض الآن</button>
+                <div id="pptxGenResult" class="mt-3"></div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="card border-0 shadow-sm sticky-top" style="top:1rem;background:linear-gradient(135deg,#f0f4ff,#f8f0ff);">
+                  <div class="card-body">
+                    <h6 class="text-primary fw-bold">💡 نصائح الاستخدام</h6>
+                    <small class="text-muted">
+                      <strong>رفع الملفات:</strong><br>
+                      • Word — يستخرج النص، الجداول، الصور<br>
+                      • PDF — يستخرج النص، الجداول<br><br>
+                      <strong>صفحة الغلاف:</strong><br>
+                      • فعّل الخيار وأدخل البيانات<br>
+                      • تُضاف تلقائياً أول الشرائح<br><br>
+                      <strong>للنتائج الأفضل:</strong><br>
+                      ✔ أضف عنواناً واضحاً<br>
+                      ✔ 6-8 شرائح هو المثالي<br>
+                      ✔ اختر النوع المناسب
+                    </small>
+                    <div id="pptxAiStatus" class="mt-3 p-2 rounded text-center" style="background:#fff;font-size:.82rem;">
+                      <span class="spinner-border spinner-border-sm text-primary me-1"></span> جاري التحقق...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── تبويب 2: HTML → PPTX ── -->
+          <div class="tab-pane fade p-3" id="pptxT2">
+            <div class="row g-3">
+              <div class="col-lg-8">
+                <div class="card border-0 shadow-sm"><div class="card-body">
+                  <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">💻 كود HTML</h6>
+                  <textarea class="form-control font-monospace" id="pptxHtmlCode" rows="14" dir="ltr" placeholder="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&#10;  &lt;section style=&quot;background:#667eea;color:white&quot;&gt;&#10;    &lt;h1&gt;عنوان العرض الرئيسي&lt;/h1&gt;&#10;  &lt;/section&gt;&#10;  &lt;section&gt;&#10;    &lt;h2&gt;النقاط الرئيسية&lt;/h2&gt;&#10;    &lt;ul&gt;&lt;li&gt;النقطة الأولى&lt;/li&gt;&lt;li&gt;النقطة الثانية&lt;/li&gt;&lt;/ul&gt;&#10;  &lt;/section&gt;&#10;&lt;/body&gt;&lt;/html&gt;"></textarea>
+                  <input type="text" class="form-control form-control-sm mt-2" id="pptxHtmlTitle" placeholder="عنوان اختياري يُضاف لأول شريحة">
+                  <button class="btn btn-warning w-100 mt-2 py-2 fw-bold" onclick="pptxHtmlConvert()">⚡ تحويل HTML إلى PowerPoint</button>
+                  <div id="pptxHtmlResult" class="mt-2"></div>
+                </div></div>
+              </div>
+              <div class="col-lg-4">
+                <div class="card border-0 shadow-sm" style="background:linear-gradient(135deg,#f0f4ff,#f8f0ff);">
+                  <div class="card-body">
+                    <h6 class="text-primary fw-bold">🧩 ما يُستخرج تلقائياً</h6>
+                    <small class="text-muted">
+                      <strong>الشرائح:</strong><br>
+                      &lt;section&gt; أو &lt;div class="slide"&gt;<br>
+                      أو تقسيم عبر &lt;h2&gt;<br><br>
+                      <strong>التنسيقات:</strong><br>
+                      • ألوان الخلفية من style="background"<br>
+                      • ألوان النص<br>
+                      • متغيرات CSS<br><br>
+                      <strong>المحتوى:</strong><br>
+                      • عناوين h1 → h4<br>
+                      • قوائم &lt;ul&gt;&lt;li&gt;<br>
+                      • فقرات &lt;p&gt;<br>
+                      • جداول &lt;table&gt;<br><br>
+                      <strong>قوالب مدعومة:</strong><br>
+                      Reveal.js، Impress.js، HTML5 Slides
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── تبويب 3: مواقع التصاميم ── -->
+          <div class="tab-pane fade p-3" id="pptxT3">
+            <div class="alert alert-info text-end mb-3">
+              <strong>📌 كيف تستخدم هذه المواقع؟</strong><br>
+              1️⃣ اضغط "فتح الموقع" ليُفتح في نافذة جديدة<br>
+              2️⃣ تصفح القوالب واختر ما يعجبك<br>
+              3️⃣ حمّل القالب كملف <strong>.pptx</strong>
+            </div>
+            <div class="row g-3">
+
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #00bcd4!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">🎨</div>
+                    <h6 class="mt-1 mb-1">Slidesgo</h6>
+                    <p class="text-muted small mb-2">آلاف القوالب المجانية بتصاميم احترافية</p>
+                    <span class="badge bg-info text-dark mb-2">شامل</span><br>
+                    <a href="https://slidesgo.com/" target="_blank" class="btn btn-sm btn-outline-info">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #ff5722!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">🎪</div>
+                    <h6 class="mt-1 mb-1">SlidesCarnival</h6>
+                    <p class="text-muted small mb-2">قوالب مجانية ملونة وإبداعية</p>
+                    <span class="badge bg-danger mb-2">إبداعي</span><br>
+                    <a href="https://www.slidescarnival.com/" target="_blank" class="btn btn-sm btn-outline-danger">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #00c4cc!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">✏️</div>
+                    <h6 class="mt-1 mb-1">Canva Presentations</h6>
+                    <p class="text-muted small mb-2">تصميم عروض باستخدام Canva وتصديرها PPTX</p>
+                    <span class="badge bg-warning text-dark mb-2">تصميم</span><br>
+                    <a href="https://www.canva.com/presentations/" target="_blank" class="btn btn-sm btn-outline-warning">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #7c4dff!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">✨</div>
+                    <h6 class="mt-1 mb-1">Beautiful.ai</h6>
+                    <p class="text-muted small mb-2">ذكاء اصطناعي لإنشاء عروض جميلة</p>
+                    <span class="badge bg-primary mb-2">ذكاء اصطناعي</span><br>
+                    <a href="https://www.beautiful.ai/" target="_blank" class="btn btn-sm btn-outline-primary">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #1976d2!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">📐</div>
+                    <h6 class="mt-1 mb-1">SlideModel</h6>
+                    <p class="text-muted small mb-2">قوالب احترافية للأعمال والتعليم</p>
+                    <span class="badge bg-primary mb-2">أعمال</span><br>
+                    <a href="https://slidemodel.com/" target="_blank" class="btn btn-sm btn-outline-primary">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #388e3c!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">📂</div>
+                    <h6 class="mt-1 mb-1">FPPT</h6>
+                    <p class="text-muted small mb-2">قوالب PowerPoint مجانية بالكامل</p>
+                    <span class="badge bg-success mb-2">مجاني</span><br>
+                    <a href="https://www.free-power-point-templates.com/" target="_blank" class="btn btn-sm btn-outline-success">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #e65100!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">🏢</div>
+                    <h6 class="mt-1 mb-1">SlideTeam</h6>
+                    <p class="text-muted small mb-2">قوالب تجارية واحترافية عالية الجودة</p>
+                    <span class="badge bg-warning text-dark mb-2">تجاري</span><br>
+                    <a href="https://www.slideteam.net/" target="_blank" class="btn btn-sm btn-outline-warning">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #6a1b9a!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">🚀</div>
+                    <h6 class="mt-1 mb-1">HiSlide</h6>
+                    <p class="text-muted small mb-2">قوالب عصرية وأنيقة بأسلوب حديث</p>
+                    <span class="badge bg-purple mb-2" style="background:#6a1b9a">عصري</span><br>
+                    <a href="https://hislide.io/" target="_blank" class="btn btn-sm btn-outline-secondary">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100" style="border-top:3px solid #fbbc04!important;">
+                  <div class="card-body text-center">
+                    <div style="font-size:2rem">📊</div>
+                    <h6 class="mt-1 mb-1">Google Slides</h6>
+                    <p class="text-muted small mb-2">إنشاء وتصدير العروض من Google Slides</p>
+                    <span class="badge bg-success mb-2">مجاني</span><br>
+                    <a href="https://docs.google.com/presentation/" target="_blank" class="btn btn-sm btn-outline-success">🌐 فتح الموقع</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── تبويب 4: AI محادثة ── -->
+          <div class="tab-pane fade" id="pptxT4">
+            <div class="d-flex flex-column p-3" style="height:calc(100vh - 170px);">
+              <div class="rounded-3 p-3 mb-3 text-white" style="background:linear-gradient(135deg,#1a1a2e,#16213e);flex-shrink:0;">
+                <h6 style="color:#a78bfa;margin:0 0 .2rem;">💬 المحادثة الذكية</h6>
+                <p style="color:#94a3b8;font-size:.82rem;margin:0;">اسألني أي سؤال أو اطلب مساعدة في إنشاء محتوى العروض</p>
+              </div>
+              <div id="pptxChatMessages" class="flex-grow-1 border rounded-3 p-3 mb-3" style="overflow-y:auto;background:#fff;min-height:200px;"></div>
+              <div class="input-group flex-shrink-0">
+                <input type="text" class="form-control" id="pptxChatInput" placeholder="اكتب سؤالك أو طلبك هنا..." onkeydown="if(event.key==='Enter')pptxSendChat()">
+                <button class="btn btn-primary" onclick="pptxSendChat()">إرسال</button>
+                <button class="btn btn-outline-danger" onclick="pptxClearChat()" title="مسح المحادثة">🗑️</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" crossorigin href="/assets/index-DAhba06B.css">
+<script type="module" crossorigin src="/assets/index-BGJdqLmX.js"></script>
+
+<script>
+// ══ منسّق الوثائق: لا يحتاج JS إضافي — React يعمل مباشرة ══
+
+// ══ منشئ العروض: state ══
+var _pptxExtractedTables = [];
+var _pptxChatMessages = [];
+
+// Input method toggle
+document.querySelectorAll('input[name="pptxInputMethod"]').forEach(function(r){
+  r.addEventListener('change', function(){
+    document.getElementById('pptxTextArea').style.display = this.value==='text'?'':'none';
+    document.getElementById('pptxFileArea').style.display = this.value==='file'?'':'none';
+  });
+});
+
+// Cover toggle
+document.getElementById('pptxAddCover').addEventListener('change', function(){
+  document.getElementById('pptxCoverFields').style.display = this.checked?'':'none';
+});
+
+// Check AI status when modal opens
+document.getElementById('pptxModal').addEventListener('show.bs.modal', async function(){
+  try {
+    var r = await fetch('/api/pptx/ai_status');
+    var d = await r.json();
+    var badge = document.getElementById('pptxAiBadge');
+    var status = document.getElementById('pptxAiStatus');
+    if(d.available){
+      badge.innerHTML = '<span style="background:rgba(50,220,120,.3);color:#afffcf;border:1px solid rgba(50,220,120,.5);border-radius:20px;padding:.2rem .8rem;font-weight:700;">🟢 Groq AI • Llama 3.3 مفعّل</span>';
+      status.innerHTML = '<span class="text-success fw-bold">🤖 Groq AI مفعّل — تحليل ذكي</span>';
+    } else {
+      badge.innerHTML = '<span style="background:rgba(255,180,0,.3);color:#ffe08a;border:1px solid rgba(255,180,0,.5);border-radius:20px;padding:.2rem .8rem;font-weight:700;">🟡 وضع محلي — بدون AI</span>';
+      status.innerHTML = '<span class="text-warning fw-bold">⚠️ Groq غير متاح — يعمل بمعالجة محلية</span>';
+    }
+  } catch(e) {}
+});
+
+// File upload → extract
+document.getElementById('pptxFile').addEventListener('change', async function(){
+  if(!this.files.length) return;
+  var fd = new FormData();
+  fd.append('file', this.files[0]);
+  var info = document.getElementById('pptxFileInfo');
+  info.innerHTML = '<div class="alert alert-info py-1"><span class="spinner-border spinner-border-sm me-1"></span> جاري قراءة الملف...</div>';
+  try {
+    var res = await fetch('/api/pptx/extract_file', {method:'POST', body:fd});
+    var d = await res.json();
+    if(d.success){
+      document.getElementById('pptxContent').value = d.full_text;
+      _pptxExtractedTables = d.tables || [];
+      info.innerHTML = '<div class="alert alert-success py-1">✅ تم استخراج <strong>' + d.word_count + '</strong> كلمة و<strong>' + _pptxExtractedTables.length + '</strong> جدول</div>';
+    } else {
+      info.innerHTML = '<div class="alert alert-danger py-1">❌ ' + d.error + '</div>';
+    }
+  } catch(e){ info.innerHTML = '<div class="alert alert-danger py-1">خطأ: '+e+'</div>'; }
+});
+
+async function pptxGenerate(){
+  var content = document.getElementById('pptxContent').value.trim();
+  if(!content){ alert('الرجاء إدخال محتوى أو رفع ملف أولاً'); return; }
+  var btn = document.getElementById('pptxGenBtn');
+  var result = document.getElementById('pptxGenResult');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري الإنشاء...';
+  result.innerHTML = '<div class="alert alert-info">📝 جاري تحليل المحتوى وإنشاء العرض... قد يستغرق دقيقة</div>';
+  var coverData = null;
+  if(document.getElementById('pptxAddCover').checked){
+    coverData = {
+      title: document.getElementById('pptxCoverTitle').value || 'العرض التقديمي',
+      subtitle: document.getElementById('pptxCoverSubtitle').value,
+      organization: document.getElementById('pptxCoverOrg').value,
+      presenter: document.getElementById('pptxCoverPresenter').value,
+      date: document.getElementById('pptxCoverDate').value,
+      logo: document.getElementById('pptxCoverIcon').value || '📊',
+      note: document.getElementById('pptxCoverNote').value,
+    };
+  }
+  try {
+    var res = await fetch('/api/pptx/generate', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        text: content,
+        num_slides: parseInt(document.getElementById('pptxNumSlides').value),
+        ptype: document.getElementById('pptxType').value,
+        title: document.getElementById('pptxTitle').value,
+        inc_tables: document.getElementById('pptxIncTables').checked,
+        inc_charts: document.getElementById('pptxIncCharts').checked,
+        theme_color: document.getElementById('pptxTheme').value,
+        font_name: document.getElementById('pptxFont').value,
+        body_font_size: parseInt(document.getElementById('pptxFontSize').value),
+        cover_data: coverData,
+        extracted_tables: _pptxExtractedTables,
+      })
+    });
+    var d = await res.json();
+    if(d.success){
+      var icons = {title:'🏠',bullets:'📌',table:'📊',chart:'📈',conclusion:'🏁'};
+      var sl = (d.slides||[]).map(function(s,i){
+        return '<div class="d-flex align-items-center border-bottom py-2 px-2"><span class="badge bg-primary me-2">'+(i+1)+'</span><strong>'+(icons[s.slide_type]||'📌')+' '+(s.title||'')+'</strong></div>';
+      }).join('');
+      result.innerHTML = '<div class="alert alert-success">🎉 عرضك جاهز!</div>'+
+        '<a href="/api/pptx/download/'+d.filename+'" class="btn btn-success w-100 mb-3 py-2 fw-bold" download>📥 تنزيل العرض (.pptx)</a>'+
+        '<div class="card border-0 shadow-sm"><div class="card-body"><h6 class="text-primary">📋 معاينة الشرائح</h6>'+sl+'</div></div>';
+    } else {
+      result.innerHTML = '<div class="alert alert-danger">❌ '+d.error+'</div>';
+    }
+  } catch(e){ result.innerHTML = '<div class="alert alert-danger">❌ خطأ: '+e+'</div>'; }
+  btn.disabled = false;
+  btn.innerHTML = '🚀 إنشاء العرض الآن';
+}
+
+async function pptxHtmlConvert(){
+  var html = document.getElementById('pptxHtmlCode').value.trim();
+  if(!html){ alert('الرجاء لصق كود HTML أولاً'); return; }
+  var result = document.getElementById('pptxHtmlResult');
+  result.innerHTML = '<div class="alert alert-info"><span class="spinner-border spinner-border-sm me-1"></span> جاري تحليل HTML وبناء العرض...</div>';
+  try {
+    var res = await fetch('/api/pptx/html_to_pptx', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({html:html, title:document.getElementById('pptxHtmlTitle').value})
+    });
+    var d = await res.json();
+    if(d.success){
+      result.innerHTML = '<div class="alert alert-success">🎉 تم التحويل! '+d.num_slides+' شريحة</div>'+
+        '<a href="/api/pptx/download/'+d.filename+'" class="btn btn-success w-100 fw-bold" download>📥 تنزيل العرض (.pptx)</a>';
+    } else {
+      result.innerHTML = '<div class="alert alert-danger">❌ '+d.error+'</div>';
+    }
+  } catch(e){ result.innerHTML = '<div class="alert alert-danger">❌ خطأ: '+e+'</div>'; }
+}
+
+function pptxRenderChat(){
+  var c = document.getElementById('pptxChatMessages');
+  c.innerHTML = _pptxChatMessages.map(function(m){
+    var u = m.role==='user';
+    return '<div class="d-flex '+(u?'justify-content-end':'justify-content-start')+' mb-2">'+
+      '<div class="px-3 py-2 rounded-3" style="max-width:80%;background:'+(u?'#667eea':'#f0f0f0')+';color:'+(u?'#fff':'#333')+'">'+
+      m.content.replace(/
+/g,'<br>')+'</div></div>';
+  }).join('');
+  c.scrollTop = c.scrollHeight;
+}
+
+async function pptxSendChat(){
+  var inp = document.getElementById('pptxChatInput');
+  var msg = inp.value.trim();
+  if(!msg) return;
+  _pptxChatMessages.push({role:'user',content:msg});
+  inp.value = '';
+  pptxRenderChat();
+  _pptxChatMessages.push({role:'assistant',content:'<span class="spinner-border spinner-border-sm"></span> جاري التفكير...'});
+  pptxRenderChat();
+  try {
+    var res = await fetch('/api/pptx/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({messages:_pptxChatMessages.slice(0,-1)})
+    });
+    var d = await res.json();
+    _pptxChatMessages[_pptxChatMessages.length-1] = {role:'assistant', content:d.reply};
+  } catch(e){
+    _pptxChatMessages[_pptxChatMessages.length-1] = {role:'assistant', content:'❌ خطأ: '+e};
+  }
+  pptxRenderChat();
+}
+
+function pptxClearChat(){
+  _pptxChatMessages = [];
+  document.getElementById('pptxChatMessages').innerHTML = '';
+}
+</script>
+</body>
+</html>

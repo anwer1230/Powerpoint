@@ -1,10 +1,16 @@
 services:
   - type: web
-    name: smart-presentation-builder
+    name: abu-malk-services
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.enableCORS false --server.enableXsrfProtection false
+    startCommand: gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT app:app
     envVars:
+      - key: SESSION_SECRET
+        generateValue: true
       - key: GROQ_API_KEY
+        sync: false
+      - key: TELEGRAM_API_ID
+        sync: false
+      - key: TELEGRAM_API_HASH
         sync: false
     healthCheckPath: /

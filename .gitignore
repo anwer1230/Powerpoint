@@ -1,6 +1,11 @@
-node_modules
-dist
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+sessions/
+pptx_app/outputs/
+outputs/
+*.log
+node_modules/
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz

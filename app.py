@@ -356,9 +356,8 @@ class TelegramClientManager:
             self.loop = asyncio.new_event_loop()
             asyncio.set_event_loop(self.loop)
 
-            session_file = os.path.join(SESSIONS_DIR, f"{self.user_id}_session.session")
             if API_ID and API_HASH:
-                self.client = TelegramClient(session_file, int(API_ID), API_HASH)
+                self.client = TelegramClient(StringSession(), int(API_ID), API_HASH)
             else:
                 logger.error("API_ID or API_HASH not set")
                 return

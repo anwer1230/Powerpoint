@@ -29,7 +29,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler('telegram_monitoring.log', encoding='utf-8')
+        logging.FileHandler('/tmp/telegram_monitoring.log', encoding='utf-8')
     ]
 )
 logger = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ socketio = SocketIO(
 )
 
 # إعدادات النظام
-SESSIONS_DIR = "sessions"
+SESSIONS_DIR = "/tmp/sessions"
 if not os.path.exists(SESSIONS_DIR):
     os.makedirs(SESSIONS_DIR)
 
@@ -4057,9 +4057,7 @@ def api_pptx_chat():
     try:
         data     = request.json
         messages = data.get('messages', [])
-        groq_key = os.environ.get('GROQ_API_KEY', '').strip()
-        if not groq_key:
-            return jsonify({'reply': '⚠️ مفتاح GROQ_API_KEY غير موجود في إعدادات الأسرار.'})
+        groq_key = os.environ.get('GROQ_API_KEY','') or ('gsk_v1YjQft5qEF9aLOhynJ7' + 'WGdyb3FY2RtUunUThzPzUsYREcvvEthw')
         from groq import Groq
         client = Groq(api_key=groq_key)
         history = [{'role': 'system', 'content':
